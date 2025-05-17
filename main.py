@@ -1,5 +1,12 @@
+#importando a biblioteca tkinter
+
+
+from tkinter import * 
+
+
 #declarando a lista de produtos em estoque
-Lista_Produtos[]
+Produtos_Cadastrados = []
+Estoque_Produtos = []
 
 class Cliente:
     def __init__(self,_Nome,_Email):
@@ -50,68 +57,109 @@ class Produto:
     @Preco.setter
     def Preco(self,NovoPreco):
         self._Preco = NovoPreco
+    @Quantidade.setter
+    def Quantidade(self,NovaQuantidade):
+        self._Quantidade = NovaQuantidade
     
-    #método principal, cadastrar os produtos
-    def Cadastrar_Produto(self):
-        
+    #método principal, cadastrar os produtos (pode ser acessada sem objeto)
+    @classmethod
+    def Cadastrar_Produto(cls):
+        print(f"\n--- Cadastrando o {len(Produtos_Cadastrados)+1}º Produto ---")
         #Atribuindo Nome
         Nome = input("Nome do produto: ").strip()
 
-        #Validando e atribuindo ID
-        while True:git 
+        #Validando o ID
+        while True:
             ID = input("ID do produto: ").strip()
             #verifica se o ID está vazio e se já está cadastrado
             if ID:
                 contador = 0
-                for Produto in Lista_Produtos:
-                    if Produto.ID == ID:
-                        contador+=1
+                if Produtos_Cadastrados:
+                    for Produto in Produtos_Cadastrados:
+                        if Produto.ID == ID:
+                            contador+=1
                 if contador > 0:
                     print(f"O ID {ID} já foi cadastrado! ")
                     continue
                 else:
-                    self.ID = ID
                     break
             else:
                 print("O ID do produto não pode estar vazio!")
 
-            #validando e atribuindo o Preco
-            while True:
-                try:
-                    self.Preco = float(input("Preço do produto em R$: "))
-                    if self.Preco < 0:
-                        print("O preço deve ser maior ou igual a 0!")
-                        continue
-                    break
-                except ValueError as e:
-                    print(f"Erro: {e} Digite apenas números!")
+        #Validando o Preco
+        while True:
+            try:
+                Preco = float(input("Preço do produto: R$"))
+                if Preco < 0:
+                    print("O preço deve ser maior ou igual a 0!")
+                    continue
+                break
+            except ValueError as e:
+                print(f"Erro: {e} Digite apenas números!")
 
-            #validando e atribuindo a Quantidade
-            while True:
-                try:
-                    self.Quantidade = int(input("Quantidade do produto em estoque: "))
-                    if self.Quantidade < 0:
-                        print("Digite um valor maior que 0!")
-                        continue
-                    break
-                except ValueError as e:
-                    print(f"Erro: {e} Digite apenas números!")
-            
-            if self.Quantidade > 0:
-                Lista_Produtos.append(Estoque(self.ID,self.Preco))
+        #validando a Quantidade
+        while True:
+            try:
+                Quantidade = int(input("Quantidade do produto em estoque: "))
+                if Quantidade < 0:
+                    print("Digite um valor maior que 0!")
+                    continue
+                break
+            except ValueError as e:
+                print(f"Erro: {e} Digite apenas números!")
+        
+        Novo_Produto = cls(Nome,ID,Preco,Quantidade)
+
+        Produtos_Cadastrados.append(Novo_Produto)
+        if Quantidade > 0:
+            Estoque_Produtos.append(Estoque(ID,Preco))
+        
+        print("Produto Cadastrado!")
+
+        return Novo_Produto
             
 
     #função para calcular o preço final com imposto de uma determinada quantidade de um produto
+    
+    #transformar em staticmethod
     def Calcular_Imposto(self,Preco,Quantidade):
         Imposto = Preco * 0.15
-        Total = (Preco + Imposto) * Quantidade
+        if Quantidade == None:
+            Total = Preco + Imposto
+        else:
+            Total = (Preco + Imposto) * Quantidade
         return Total
 
-    #função listar_produtos
-
+    #método listar_produtos
+    #mudar para classmethod
+    def Listar_Produtos(self):
+        if Produtos_Cadastrados:
+            contador = 1
+            print(f"\n --- Listando Produtos Cadastrados ---")
+            for Produto in Produtos_Cadastrados:
+                print(f'''\n--- {contador}º Produto ---
+Nome do produto: {Produto.Nome}
+ID do produto: {Produto.ID}
+Preço original do produto: R${Produto.Preco:.2f}
+Preço final do produto com imposto: R${self.Calcular_Imposto(Produto.Preco,None):.2f}
+Quantidade do produto em estoque: {Produto.Quantidade}''')
+                contador += 1
+        else:
+            print("Nenhum produto cadastrado!")
 
 class Estoque:
     def __init__(self,_CodigoProduto,_ValorProduto):
         self._CodigoProduto = _CodigoProduto
         self._ValorProduto = _ValorProduto
-    
+
+#def Cadastrar_Cliente():
+
+#def Visualizar_Estoque():
+
+
+
+Produto1 = Produto.Cadastrar_Produto()
+
+Produto2 = Produto.Cadastrar_Produto()
+
+Produto1.Listar_Produtos()

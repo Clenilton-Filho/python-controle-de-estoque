@@ -28,14 +28,14 @@ class Cliente:
     def Cadastrar_Cliente(cls):
         while True:
             contador = 0
-            Nome = input("Nome completo do cliente: ").strip()
+            Nome = input("\nNome completo do cliente: ").strip()
 
             #Verifica se o nome já está cadastrado
             for Item_Cliente in Clientes:
                 if Item_Cliente.Nome == Nome:
                     contador+=1
             if contador > 0:
-                print("O nome já está cadastrado!")
+                print("\nO nome já está cadastrado!")
                 continue
             break
 
@@ -43,40 +43,43 @@ class Cliente:
         while True:
             Email = input("E-mail do cliente: ").strip()
             if '@' not in Email or '.' not in Email:
-                print("E-mail inválido!")
+                print("\nE-mail inválido!")
                 continue
             break
         
         Clientes.append(cls(Nome,Email))
-        print("Cliente cadastrado!")
-        return
+        print("\nCliente cadastrado!")
 
     #Lista os dados dos clientes cadastrados (acessível sem objetos)
     @staticmethod
     def Listar_Clientes():
         if Clientes:
             contador = 1
-            print("---Listando Clientes---")
+            print("\n--- Listando Clientes ---")
             for Item_Cliente in Clientes:
-                print(f'''{contador}º cliente
+                print(f'''
+--- {contador}º cliente ---
 Nome do cliente: {Item_Cliente.Nome}
 E-mail do cliente: {Item_Cliente.Email}''')
+                contador+=1
         else:
-            print("Nenhum cliente cadastrado!")
-        return
+            print("\nNenhum cliente cadastrado!")
     
     @staticmethod
     def Excluir_Cliente():
-        while True: 
-            Nome = input("Digite o nome do cliente: ").strip()
-            for Item_Cliente in Clientes:
-                if Item_Cliente.Nome == Nome:
-                    Clientes.remove(Item_Cliente)
-                    print("Cliente excluído!")
-                    print("Voltando ao menu principal...")
-                    return Menu_Opcoes()
-            print(f'''O nome "{Nome}" não foi encontrado!''')
-        return
+        if Clientes:
+            while True: 
+                Nome = input("Digite o nome do cliente ou 'sair' para voltar: ").strip()
+                if Nome == 'sair':
+                    break
+                for Item_Cliente in Clientes:
+                    if Item_Cliente.Nome == Nome:
+                        Clientes.remove(Item_Cliente)
+                        print("\nCliente excluído!")
+                        return
+                print(f'''\nO nome "{Nome}" não foi encontrado!''')
+        else:
+            print("Nenhum cliente cadastrado para excluir!")
         
 class Produto:
     def __init__(self,_Nome,_ID,_Preco,_Quantidade):
@@ -117,7 +120,7 @@ class Produto:
     def Cadastrar_Produto(cls):
         print(f"\n--- Cadastrando o {len(Produtos_Cadastrados)+1}º Produto ---")
         #Atribuindo Nome
-        Nome = input("Nome do produto: ").strip()
+        Nome = input("\nNome do produto: ").strip()
 
         #Validando o ID
         while True:
@@ -130,48 +133,47 @@ class Produto:
                         if Produto.ID == ID:
                             contador+=1
                 if contador > 0:
-                    print(f"O ID {ID} já foi cadastrado! ")
+                    print(f"\nO ID {ID} já foi cadastrado! ")
                     continue
                 else:
                     break
             else:
-                print("O ID do produto não pode estar vazio!")
+                print("\nO ID do produto não pode estar vazio!")
 
-        #Validando o Preco
+        #Validando o Preço
         while True:
             try:
                 Preco = float(input("Preço do produto: R$"))
                 if Preco < 0:
-                    print("O preço deve ser maior ou igual a 0!")
+                    print("\nO preço deve ser maior ou igual a 0!")
                     continue
                 break
             except ValueError:
-                print(f"Erro! Digite apenas números!")
+                print(f"\nErro! Digite apenas números!")
 
         #Validando a Quantidade
         while True:
             try:
                 Quantidade = int(input("Quantidade do produto em estoque: "))
                 if Quantidade < 0:
-                    print("Digite um valor maior que 0!")
+                    print("\nDigite um valor maior que 0!")
                     continue
                 break
             except ValueError:
-                print(f"Erro! Digite apenas números!")
+                print(f"\nErro! Digite apenas números!")
 
-        #Cadastra o produto e, se a quantidade for maior que 0, coloca também na lista com o estoque
+        #Cadastra o produto e, se a quantidade for maior que 0, coloca também na lista de estoque
         Produtos_Cadastrados.append(cls(Nome,ID,Preco,Quantidade))
         if Quantidade > 0:
             Estoque_Produtos.append(Estoque(ID,Preco))
         
-        print("Produto cadastrado!")
-        return
+        print("\nProduto cadastrado!")
     
     #Exclui o cadastro de um produto caso o usuário digite um ID válido
     @staticmethod
     def Excluir_Cadastro_Produto():
         while True:
-            ID = input("Digite o ID do produto ou 'sair' para voltar: ").strip()
+            ID = input("\nDigite o ID do produto ou 'sair' para voltar: ").strip()
             if ID == 'sair':
                 break
             for Item_Produto in Produtos_Cadastrados:
@@ -181,9 +183,9 @@ class Produto:
                         if Item_Estoque.CodigoProduto == ID:
                             Estoque_Produtos.remove(Item_Estoque)
                             break
-                    print(f"Cadastro removido! Voltando ao menu principal...")
-                    return Menu_Opcoes()
-            print(f"ID {ID} não encontrado!")
+                    print(f"\nCadastro removido!")
+                    return
+            print(f"\nID {ID} não encontrado!")
 
 
 
@@ -203,7 +205,7 @@ class Produto:
         #Verifica se existem produtos cadastrados e usa um contador para enumerar os produtos
         if Produtos_Cadastrados:
             contador = 1
-            print(f"\n --- Listando Produtos Cadastrados ---")
+            print(f"\n--- Listando Produtos Cadastrados ---")
             for Produto in Produtos_Cadastrados:
                 print(f'''\n--- {contador}º Produto ---
 Nome do produto: {Produto.Nome}
@@ -213,7 +215,7 @@ Preço final do produto com imposto: R${cls.Calcular_Imposto(Produto.Preco):.2f}
 Quantidade do produto em estoque: {Produto.Quantidade}''')
                 contador += 1
         else:
-            print("Nenhum produto cadastrado!")
+            print("\nNenhum produto cadastrado!")
 
 class Estoque:
     def __init__(self,_CodigoProduto,_ValorProduto):
@@ -240,90 +242,102 @@ class Estoque:
     def Visualizar_Estoque():
         #Verifica se existem produtos em estoque
         if Estoque_Produtos:
-                print(f"\n --- Listando Estoque ---\n")
+                contador = 1
+                print(f"\n --- Listando Estoque ---")
                 for Item_Produto in Estoque_Produtos:
                     for Cadastro in Produtos_Cadastrados:
                         if Cadastro.ID == Item_Produto.CodigoProduto:
                             Nome = Cadastro.Nome
                             Quantidade = Cadastro.Quantidade
+                            print(f"\n--- {contador}º Produto ---")
                             print(f"Código do produto: {Item_Produto.CodigoProduto}")
                             if Nome != '':
                                 print(f"Nome do produto: {Nome}")
                             print(f"Valor do produto sem imposto: R${Item_Produto.ValorProduto}")
                             print(f"Valor do produto com imposto: R${Produto.Calcular_Imposto(Item_Produto.ValorProduto)}")
                             print(f"Quantidade em estoque: {Quantidade}")
+                            contador += 1
         else:
-            print("Nenhum produto em estoque!")
-
-#Função para aumentar a quantidade de um produto no estoque
-def Reabastecer_Estoque():
-    while True:
-        #Validação do ID e quantidade a adicionar
-        ID = input("ID do produto: ").strip()
-        if ID == '':
-            print("O ID não pode ser vazio!")
-            continue
-        while True:
-            try:
-                Quantidade = int(input("Quantidade para reabastecer: "))
-                if Quantidade <= 0:
-                    print("A quantidade precisa ser maior que 0!")
+            print("\nNenhum produto em estoque!")
+    @staticmethod
+    #Função para aumentar a quantidade de um produto no estoque
+    def Reabastecer_Estoque():
+        if Estoque_Produtos:
+            while True:
+                #Validação do ID e quantidade a adicionar
+                ID = input("\nID do produto: ").strip()
+                if ID == '':
+                    print("\nO ID não pode ser vazio!")
                     continue
-                break
-            except ValueError :
-                print(f"Erro! Digite apenas números!")
-                continue
-        
-        for Item_Produto in Produtos_Cadastrados:
-            if Item_Produto.ID == ID:
-                #Se a quantidade inicial for 0, coloca o item no estoque
-                if Item_Produto.Quantidade == 0:
-                    Estoque_Produtos.append(Estoque(Item_Produto.ID,Item_Produto.Preco))
-                Item_Produto.Quantidade += Quantidade
-                
-                #Para a função se conseguir alterar a quantidade
-                print("Produto reabastecido!")
-                return
-        print(f'''O ID "{ID}" não está cadastrado!''')
-        
-#Função para retirar uma quantidade de um produto no estoque
-def Retirar_Produto():
-    while True:
-        #validação do ID e quantidade a retirar
-        ID = input("ID do produto: ").strip()
-        if ID == '':
-            print("O ID não pode ser vazio!")
-            continue
-        for Item_Produto in Produtos_Cadastrados:
-            #Somente pede a quantidade se o produto for encontrado
-            if Item_Produto.ID == ID:
                 while True:
-                        try:
-                            Quantidade = int(input("Quantidade para retirar: "))
-                            if Quantidade <= 0:
-                                print("A quantidade precisa ser maior que 0!")
-                                continue
-                            if Item_Produto.Quantidade - Quantidade < 0:
-                                print(f"Quantidade inválida, o estoque do produto ficaria negativo!")
-                                continue
-
-                            break
-                        except ValueError :
-                            print(f"Erro! Digite apenas números!")
+                    try:
+                        Quantidade = int(input("Quantidade para reabastecer: "))
+                        if Quantidade <= 0:
+                            print("\nA quantidade abastecida precisa ser maior que 0!")
                             continue
-                #Para a função se conseguir alterar a quantidade
-                Item_Produto.Quantidade -= Quantidade
+                        break
+                    except ValueError :
+                        print(f"\nErro! Digite apenas números!")
+                        continue
                 
-                #Se o produto ficar com quantidade 0, tira do estoque
-                if Item_Produto.Quantidade == 0:
-                    for Item in Estoque_Produtos:
-                        if Item.CodigoProduto == ID:
-                            Estoque_Produtos.remove(Item)
-                            break
-                
-                print("Quantidade retirada!")
-                return
-        print(f'''O ID "{ID}" não está cadastrado!''')
+                for Item_Produto in Produtos_Cadastrados:
+                    if Item_Produto.ID == ID:
+                        #Se a quantidade inicial for 0, coloca o item no estoque
+                        if Item_Produto.Quantidade == 0:
+                            Estoque_Produtos.append(Estoque(Item_Produto.ID,Item_Produto.Preco))
+                        Item_Produto.Quantidade += Quantidade
+                        
+                        #Para a função se conseguir alterar a quantidade
+                        print("\nProduto reabastecido!")
+                        return
+                print(f'''\nO ID "{ID}" não está cadastrado!''')
+        else:
+            print("\nNenhum produto em estoque para reabastecer!")
+    
+    @staticmethod    
+    #Função para retirar uma quantidade de um produto no estoque
+    def Retirar_Produto():
+        if Estoque_Produtos:
+            while True:
+                #validação do ID e quantidade a retirar
+                ID = input("\nDigite o ID do produto ou 'sair' para voltar: ").strip()
+                if ID == '':
+                    print("\nO ID não pode ser vazio!")
+                    continue
+                elif ID == 'sair':
+                    break
+                for Item_Produto in Produtos_Cadastrados:
+                    #Somente pede a quantidade se o produto for encontrado
+                    if Item_Produto.ID == ID:
+                        while True:
+                                try:
+                                    Quantidade = int(input("Quantidade para retirar: "))
+                                    if Quantidade <= 0:
+                                        print("\nA quantidade retirada precisa ser maior que 0!")
+                                        continue
+                                    if Item_Produto.Quantidade - Quantidade < 0:
+                                        print(f"\nQuantidade inválida, o estoque do produto ficaria negativo!")
+                                        continue
+
+                                    break
+                                except ValueError :
+                                    print(f"\nErro! Digite apenas números!")
+                                    continue
+                        #Para a função se conseguir alterar a quantidade
+                        Item_Produto.Quantidade -= Quantidade
+                        
+                        #Se o produto ficar com quantidade 0, tira do estoque
+                        if Item_Produto.Quantidade == 0:
+                            for Item in Estoque_Produtos:
+                                if Item.CodigoProduto == ID:
+                                    Estoque_Produtos.remove(Item)
+                                    break
+                        
+                        print("\nQuantidade retirada!")
+                        return
+                    print(f'''\nO ID "{ID}" não está cadastrado!''')
+        else:
+            print("\nNenhum produto em estoque para retirar!")
 
 
 #Menu com opções referentes aos clientes
@@ -332,11 +346,11 @@ def Menu_Clientes():
 [1] - Cadastrar Cliente
 [2] - Listar Clientes Cadastrados
 [3] - Excluir Cliente
-[4] - Voltar ao Menu Principal\n''')
+[4] - Voltar ao Menu Principal''')
         while True:
-            Opcao_Clientes = input("Digite a opção desejada: ").strip()
+            Opcao_Clientes = input("\nDigite a opção desejada: ").strip()
             if Opcao_Clientes not in ('1234') or len(Opcao_Clientes) != 1:
-                print("Resposta inválida!")
+                print("\nResposta inválida!")
                 continue
             match Opcao_Clientes:
                 case '1':
@@ -349,7 +363,7 @@ def Menu_Clientes():
                     break
             break
 
-        print("Voltando ao menu principal...")
+        print("\nVoltando ao menu principal...")
 
 #Menu com opções referentes aos produtos
 def Menu_Produto():
@@ -357,11 +371,11 @@ def Menu_Produto():
 [1] - Cadastrar Produto
 [2] - Listar Produtos Cadastrados
 [3] - Excluir Cadastro de um Produto
-[4] - Voltar ao Menu Principal\n''')
+[4] - Voltar ao Menu Principal''')
         while True:
-            Opcao_Produto = input("Digite a opção desejada: ").strip()
+            Opcao_Produto = input("\nDigite a opção desejada: ").strip()
             if Opcao_Produto not in ('1234') or len(Opcao_Produto) != 1:
-                print("Resposta inválida!")
+                print("\nResposta inválida!")
                 continue
             break
         match Opcao_Produto:
@@ -372,8 +386,8 @@ def Menu_Produto():
             case '3':
                 Produto.Excluir_Cadastro_Produto()
             case '4':
-                print("Até mais!")
-        print("Voltando ao menu principal...")
+                print("\nAté mais!")
+        print("\nVoltando ao menu principal...")
         
 #Menu com opções referentes aos produtos em estoque
 def Menu_Estoque():
@@ -381,23 +395,23 @@ def Menu_Estoque():
 [1] - Listar Produtos em Estoque
 [2] - Reabastecer Estoque de um Produto
 [3] - Retirar uma Quantidade de um Produto no Estoque
-[4] - Voltar ao Menu Principal\n''')
+[4] - Voltar ao Menu Principal''')
         while True:
-            Opcao_Estoque = input("Digite a opção desejada: ").strip()
+            Opcao_Estoque = input("\nDigite a opção desejada: ").strip()
             if Opcao_Estoque not in ('1234') or len(Opcao_Estoque) != 1:
-                print("Resposta inválida!")
+                print("\nResposta inválida!")
                 continue
             match Opcao_Estoque:
                 case '1':
                     Estoque.Visualizar_Estoque()
                 case '2':
-                    Reabastecer_Estoque()
+                    Estoque.Reabastecer_Estoque()
                 case '3':
-                    Retirar_Produto()
+                    Estoque.Retirar_Produto()
                 case '4':
-                    print("Até mais!")
-            print("Voltando ao menu principal...")
+                    print("\nAté mais!")
             break
+        print("\nVoltando ao menu principal...")
 #Menu de opções para chamar as outras funções de menus
 def Menu_Principal():
     while True:
@@ -405,11 +419,11 @@ def Menu_Principal():
 [1] - Opções de Produto
 [2] - Opções de Estoque
 [3] - Opções de Clientes
-[4] - Sair do programa\n''')
+[4] - Sair do programa''')
         while True:
-            Opcao_Menu = input("Digite a opção desejada: ").strip()
+            Opcao_Menu = input("\nDigite a opção desejada: ").strip()
             if Opcao_Menu not in ('1234') or len(Opcao_Menu) != 1:
-                print("Resposta inválida!")
+                print("\nResposta inválida!")
                 continue
             break
         match Opcao_Menu:
@@ -424,6 +438,9 @@ def Menu_Principal():
 
 ########Adicionar funcionalidades de compra/venda
 ############### PDF para entregar
-#####lista estoque (bug ao tentar sair)
+####email - verificar se já está cadastrado, adicionar + mensagens de validação (faltando @, faltando .)
+####tkinter na visualizacao de cliente
+
+
 
 Menu_Principal()

@@ -1,14 +1,8 @@
 import json
-import os
+def salvar_lista_em_json(lista, caminho_arquivo):
+    with open(caminho_arquivo, 'w', encoding='utf-8') as f:
+        json.dump(lista, f, indent=4, ensure_ascii=False)
 
-ARQUIVO = "estoque.json"
-
-def carregar_dados():
-    if os.path.exists(ARQUIVO):
-        with open(ARQUIVO, "r") as f:
-            return json.load(f)
-    return []
-
-def salvar_dados(estoque):
-    with open(ARQUIVO, "w") as f:
-        json.dump(estoque, f, indent=4)
+def carregar_lista_de_json(caminho_arquivo):
+    with open(caminho_arquivo, 'r', encoding='utf-8') as f:
+        return json.load(f)

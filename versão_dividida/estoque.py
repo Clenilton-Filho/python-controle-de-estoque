@@ -1,45 +1,77 @@
-from datetime import datetime
+from produtos import Produto
 
-def cadastrar_produto(estoque, nome, preco):
-    produto = {
-        "nome": nome,
-        "preço": preco,
-        "data_cadastro": datetime.now().strftime("%d / %m / %Y | %H:%M:%S")
-    }
-    estoque.append(produto)
-    print("Produto cadastrado com sucesso.")
+def ler_numero_positivo(mensagem="Digite um número positivo: "):
+    while True:
+        try:
+            valor = int(input(mensagem))
+            if valor < 0:
+                print("O valor deve ser positivo!")
+                continue
+            return valor
+        except ValueError:
+            print("Digite um número válido!")
 
-def listar_produtos(estoque):
-    if not estoque:
-        print("Nenhum produto cadastrado.")
+def Visualizar_Estoque(Estoque_Produtos, Produtos_Cadastrados):
+    if Estoque_Produtos:
+        contador = 1
+        print(f"\n --- Listando Estoque ---")
+        for Item_Produto in Estoque_Produtos:
+            for Cadastro in Produtos_Cadastrados:
+                if Cadastro.ID == Item_Produto.ID:
+                    Nome = Cadastro.Nome
+                    Quantidade = Item_Produto.Quantidade
+                    print(f"\n--- {contador}º Produto ---")
+                    print(f"Código do produto: {Item_Produto.ID}")
+                    if Nome != '':
+                        print(f"Nome do produto: {Nome}")
+                    imposto, valor_com_imposto = Produto.Calcular_Imposto(Item_Produto.ValorProduto)
+                    print(f"Valor do produto sem imposto: R${Item_Produto.ValorProduto:.2f}")
+                    print(f"Imposto (10%): R${imposto:.2f}")
+                    print(f"Valor do produto com imposto: R${valor_com_imposto:.2f}")
+                    print(f"Quantidade em estoque: {Quantidade}")
+                    contador += 1
     else:
-        for i, produto in enumerate(estoque, 1):
-            print(f"{i}. Nome: {produto['nome']}, Preço: R${produto['preço']:.2f} Cadastrado em: {produto.get('data_cadastro', 'Data desconhecida')}")
-        print(f"\nTotal de produtos cadastrados: {len(estoque)}")
-        
-def buscar_produto(estoque, nome):
-    encontrados = [produto for produto in estoque if produto["nome"].lower() == nome.lower()]
-    if encontrados:
-        for produto in encontrados:
-            print(f"Nome: {produto['nome']}, Preço: R${produto['preço']:.2f}")
-    else:
-        print("Produto não encontrado.")
+        print("\nNenhum produto em estoque!")
 
-def alterar_produto(estoque, nome, novo_nome=None, novo_preco=None):
-    for produto in estoque:
-        if produto["nome"].lower() == nome.lower():
-            if novo_nome:
-                produto["nome"] = novo_nome
-            if novo_preco is not None:
-                produto["preço"] = novo_preco
-            print("Produto alterado com sucesso.")
-            return
-    print("Produto não encontrado.")
+def Reabastecer_Estoque(Estoque_Produtos):
+    if not Estoque_Produtos:
+        print("Estoque vazio. Não há produtos para reabastecer.")
+        return
 
-def excluir_produto(estoque, nome):
-    for i, produto in enumerate(estoque):
-        if produto["nome"].lower() == nome.lower():
-            del estoque[i]
-            print("Produto excluído com sucesso.")
+    try:
+        codigo = int(input("Digite o código do produto para reabastecer: "))
+    except ValueError:
+        print("Digite um número válido.")
+        return
+
+    for produto in Estoque_Produtos:
+        if produto.ID == codigo:
+            quantidade = ler_numero_positivo("Digite a quantidade para adicionar ao estoque: ")
+            produto.Quantidade += quantidade
+            print("Estoque reabastecido!")
             return
-    print("Produto não encontrado.")
+
+    print("Produto não encontrado no estoque.")
+
+def Retirar_Produto(Estoque_Produtos):
+    if not Estoque_Produtos:
+        print("Estoque vazio. Não há produtos para retirar.")
+        return
+
+    try:
+        codigo = int(input("Digite o código do produto para retirar: "))
+    except ValueError:
+        print("Digite um número válido.")
+        return
+
+    for produto in Estoque_Produtos:
+        if produto.ID == codigo:
+            quantidade = ler_numero_positivo("Digite a quantidade para retirar do estoque: ")
+            if quantidade > produto.Quantidade:
+                print("Quantidade insuficiente no estoque!")
+                return
+            produto.Quantidade -= quantidade
+            print("Produto retirado do estoque!")
+            return
+
+    print("Produto não encontrado no estoque.")

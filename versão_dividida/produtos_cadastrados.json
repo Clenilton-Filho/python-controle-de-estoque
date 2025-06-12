@@ -1,0 +1,38 @@
+[
+    {
+        "ID": 50,
+        "Nome": "feijão",
+        "Quantidade": 0,
+        "Valor": 54.555555
+    },
+    {
+        "ID": 33,
+        "Nome": "jeijão de corda",
+        "Quantidade": 0,
+        "Valor": 55.555555
+    },
+    {
+        "ID": 2,
+        "Nome": "neo",
+        "Quantidade": 0,
+        "Valor": 23.0
+    },
+    {
+        "ID": 1,
+        "Nome": "neo2",
+        "Quantidade": 0,
+        "Valor": 55.55
+    },
+    {
+        "ID": 22,
+        "Nome": "arroz",
+        "Quantidade": 0,
+        "Valor": 66.0
+    },
+    {
+        "ID": 4,
+        "Nome": "4",
+        "Quantidade": 0,
+        "Valor": 4.0
+    }
+]

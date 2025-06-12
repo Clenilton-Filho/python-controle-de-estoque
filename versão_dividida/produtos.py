@@ -30,22 +30,38 @@ class Produto:
 
     @classmethod
     def Cadastrar_Produto(cls, lista_produtos):
+        
+        #Pedindo e validando o ID
         while True:
             try:
-                ID = int(input("ID do produto: "))
-                if ID < 0:
-                    print("ID deve ser >= 0")
+                ID = input("ID do produto: ").strip()
+                
+                #verifica se o ID está vazio e se já está cadastrado
+                if ID == '':
+                    print("\nO ID não pode estar vazio!")
                     continue
                 if any(p.ID == ID for p in lista_produtos):
-                    print("ID já cadastrado")
+                    print(f"\nO ID {ID} já cadastrado")
                     continue
                 break
             except ValueError:
                 print("Digite um número válido para ID")
 
+        #Pedindo nome
         Nome = input("Nome do produto: ").strip()
-        Quantidade = 0
 
+        #Validando a Quantidade
+        while True:
+            try:
+                Quantidade = int(input("Quantidade do produto em estoque: "))
+                if Quantidade < 0:
+                    print("\nDigite um valor maior que 0!")
+                    continue
+                break
+            except ValueError:
+                print(f"\nErro! Digite apenas números!")
+
+        #Validando o Preço
         while True:
             try:
                 Valor = float(input("Preço do produto: R$"))
@@ -58,6 +74,10 @@ class Produto:
 
         novo_produto = cls(ID, Nome, Quantidade, Valor)
         lista_produtos.append(novo_produto)
+
+        if Quantidade > 0:
+            Estoque_Produtos.append(Estoque(ID,Preco))
+
         print("\nProduto cadastrado!")
 
     @staticmethod

@@ -43,7 +43,14 @@ class Cliente:
         while True:
             Email = input("E-mail do cliente: ").strip()
             if '@' not in Email or '.' not in Email:
-                print("\nE-mail inválido!")
+                print("\nE-mail inválido!\n")
+                if '@' not in Email:
+                    print("Está faltando @")
+                if '.' not in Email:
+                    print("Está faltando um ponto (.)")
+
+                print("\nFormato esperado: exemplo@dominio.com\n")
+
                 continue
             break
         
@@ -192,9 +199,15 @@ class Produto:
     #Função para calcular o preço final com imposto de um produto
     @staticmethod
     def Calcular_Imposto(Preco,Quantidade = 0):
+
+        #imposto padrão
         Imposto = Preco * 0.15
+
+        #Se a quantidade passada for 0, o total vai ser o preço unitário + imposto
         if Quantidade == 0:
             Total = Preco + Imposto
+
+        #Se for maior que 0, o total vai ser o preço com imposto e isso multiplicado pela quantidade
         else:
             Total = (Preco + Imposto) * Quantidade
         return Total
@@ -253,8 +266,8 @@ class Estoque:
                             print(f"Código do produto: {Item_Produto.CodigoProduto}")
                             if Nome != '':
                                 print(f"Nome do produto: {Nome}")
-                            print(f"Valor do produto sem imposto: R${Item_Produto.ValorProduto}")
-                            print(f"Valor do produto com imposto: R${Produto.Calcular_Imposto(Item_Produto.ValorProduto)}")
+                            print(f"Valor do produto sem imposto: R${Item_Produto.ValorProduto:.2f}")
+                            print(f"Valor do produto com imposto: R${Produto.Calcular_Imposto(Item_Produto.ValorProduto):.2f}") 
                             print(f"Quantidade em estoque: {Quantidade}")
                             contador += 1
         else:
@@ -435,12 +448,5 @@ def Menu_Principal():
                 Menu_Clientes()
             case '4':
                 return
-
-########Adicionar funcionalidades de compra/venda
-############### PDF para entregar
-####email - verificar se já está cadastrado, adicionar + mensagens de validação (faltando @, faltando .)
-####tkinter na visualizacao de cliente
-
-
 
 Menu_Principal()

@@ -30,38 +30,22 @@ class Produto:
 
     @classmethod
     def Cadastrar_Produto(cls, lista_produtos):
-        
-        #Pedindo e validando o ID
         while True:
             try:
-                ID = input("ID do produto: ").strip()
-                
-                #verifica se o ID está vazio e se já está cadastrado
-                if ID == '':
-                    print("\nO ID não pode estar vazio!")
+                ID = int(input("ID do produto: "))
+                if ID < 0:
+                    print("ID deve ser >= 0")
                     continue
                 if any(p.ID == ID for p in lista_produtos):
-                    print(f"\nO ID {ID} já cadastrado")
+                    print("ID já cadastrado")
                     continue
                 break
             except ValueError:
                 print("Digite um número válido para ID")
 
-        #Pedindo nome
         Nome = input("Nome do produto: ").strip()
+        Quantidade = 0
 
-        #Validando a Quantidade
-        while True:
-            try:
-                Quantidade = int(input("Quantidade do produto em estoque: "))
-                if Quantidade < 0:
-                    print("\nDigite um valor maior que 0!")
-                    continue
-                break
-            except ValueError:
-                print(f"\nErro! Digite apenas números!")
-
-        #Validando o Preço
         while True:
             try:
                 Valor = float(input("Preço do produto: R$"))
@@ -74,10 +58,6 @@ class Produto:
 
         novo_produto = cls(ID, Nome, Quantidade, Valor)
         lista_produtos.append(novo_produto)
-
-        if Quantidade > 0:
-            Estoque_Produtos.append(Estoque(ID,Preco))
-
         print("\nProduto cadastrado!")
 
     @staticmethod
@@ -113,3 +93,52 @@ Preço (com imposto): R${Produto.Calcular_Imposto(p.Valor):.2f}''')
                     print("Digite um número válido.")
         else:
             print("Nenhum produto cadastrado para excluir!")
+    
+    @staticmethod
+    def Atualizar_Produto_info(lista_produtos):
+        if not lista_produtos:
+            print("Nenhum produto cadastrado para realizar atualização")
+            return
+        id_Produto = input("Digite o ID do produto que será atualizado: ").strip()
+        if not id_Produto:
+            print("Nada foi inserido. Voltando ao menu")
+            return
+        try:
+            id_Produto = int(id_Produto)
+            if id_Produto < 0: 
+                print("ID deve ser um numero maior ou igual a 0")
+                return
+        except ValueError:
+            print("ID deve ser um número inteiro!")
+            return
+
+        for p in lista_produtos:
+            if p.ID == id_Produto:
+                Produto_Nome_Att = input("Digite o nome do produto: ")
+                if not Produto_Nome_Att:
+                    print("Nada foi inserido. Voltando ao menu")
+                    return
+                for prod in lista_produtos:
+                    if prod.Nome == Produto_Nome_Att and prod.ID != id_Produto:
+                        print(f"\nEste nome já está cadastrado.")
+                        return
+                p.Nome = Produto_Nome_Att
+                print("\nProduto atualizado")
+                Valor_Att_str = input("Digite o novo preço do produto: R$ ")
+                if not Valor_Att_str:
+                    print("Nada foi inserido. Voltando ao menu")
+                    return
+                try:
+                    Valor_Att = float(Valor_Att_str)
+                    if Valor_Att < 0:
+                        print("\nO preço deve ser maior ou igual a 0!")
+                        return
+                    p.Valor = Valor_Att
+                    print("\nProduto atualizado")
+                except ValueError:
+                    print("\nDigite apenas números!")
+                    return
+                return  
+        print(f'\nO ID "{id_Produto}" não está cadastrado.')
+
+

@@ -45,6 +45,7 @@ class Cliente:
     def __init__(self, _Nome, _Email):
         self._Nome = _Nome
         self._Email = _Email
+        
 
     @property
     def Nome(self):
@@ -53,12 +54,14 @@ class Cliente:
     def Email(self):
         return self._Email
     
+    
     @Nome.setter
     def Nome(self, novoNome):
         self._Nome = novoNome
+    
     @Email.setter
     def Email(self, novoEmail):
-        self._Email = novoEmail
+        self._Email = novoEmail    
 
     @classmethod
     def Cadastrar_Cliente(cls):
@@ -69,19 +72,66 @@ class Cliente:
                 if Item_Cliente.Nome == Nome:
                     contador += 1
             if contador > 0:
-                print("\nO nome já está cadastrado!")
+                print("\nEste nome já está cadastrado!")
                 continue
             break
 
         while True:
+            contador = 0
             Email = input("E-mail do cliente: ").strip()
             if '@' not in Email or '.' not in Email:
                 print("\nE-mail inválido!")
+                continue
+            for Item_Cliente in Clientes:
+                if Item_Cliente.Email == Email:
+                    contador += 1 
+            if contador > 0:
+                print("\nEste E-mail já está cadastrado")
                 continue
             break
         
         Clientes.append(cls(Nome, Email))
         print("\nCliente cadastrado!")
+    
+    
+    @staticmethod
+    def Atualizar_Cliente():
+        if not Clientes:
+            print("Nenhum cliente cadastrado.")
+            return
+        Nome = input("Digite o nome do cliente que será atualizado: ").strip()
+        if not Nome:
+            print("Nada foi inserido. Voltando ao menu ")
+            return
+        for Item_Cliente in Clientes:
+            if Item_Cliente.Nome == Nome:
+                Nome_Att = input("Digite o novo nome: ").strip()
+                if not Nome_Att:
+                    print("Nada foi inserido. Voltando ao menu ")
+                    return
+                for Item_Cliente in Clientes:
+                    if Item_Cliente.Nome == Nome_Att:
+                        print(f"\nEste nome já está cadastrado.")
+                        return
+                    Item_Cliente.Nome = Nome_Att
+                    print("\nCliente atualizado")
+                Email_Att = input("Digite o nome E-mail: ").strip()
+                if not Email_Att:
+                    print("Nada foi inserido. Voltando ao menu ")
+                    return
+                if '@' not in Email_Att or '.' not in Email_Att:
+                    print("\nE-mail inválido!")
+                    continue
+                for Item_Cliente in Clientes:
+                    if Item_Cliente.Email == Email_Att:
+                        print("\nEste E-mail já está cadastrado")
+                        return
+                    Item_Cliente.Email = Email_Att
+                    print("\nCliente atualizado")
+                    return
+        print(f'\nO nome "{Nome}" não está cadastrado.')
+        return
+
 
     @staticmethod
     def Listar_Clientes():
@@ -101,8 +151,9 @@ E-mail do cliente: {Item_Cliente.Email}''')
     def Excluir_Cliente():
         if Clientes:
             while True: 
-                Nome = input("Digite o nome do cliente ou 'sair' para voltar: ").strip()
-                if Nome.lower() == 'sair':
+                Nome = input("Digite o nome do cliente: ").strip()
+                if not Nome:
+                    print("Nada foi inserido. Voltando ao menu")
                     break
                 for Item_Cliente in Clientes:
                     if Item_Cliente.Nome == Nome:
@@ -120,10 +171,11 @@ def Menu_Clientes():
         print('''\n---Opções de Clientes---
 [1] - Cadastrar Cliente
 [2] - Listar Clientes Cadastrados
-[3] - Excluir Cliente
-[4] - Voltar ao Menu Principal''')
+[3] - Atualizar Informações de Cliente
+[4] - Excluir Cliente
+[5] - Voltar ao Menu Principal''')
         Opcao_Clientes = input("\nDigite a opção desejada: ").strip()
-        if Opcao_Clientes not in ('1','2','3','4'):
+        if Opcao_Clientes not in ('1','2','3','4','5'):
             print("\nResposta inválida!")
             continue
         match Opcao_Clientes:
@@ -132,8 +184,10 @@ def Menu_Clientes():
             case '2':
                 Cliente.Listar_Clientes()
             case '3':
-                Cliente.Excluir_Cliente()
+                Cliente.Atualizar_Cliente()
             case '4':
+                Cliente.Excluir_Cliente()
+            case '5':
                 break
     print("\nVoltando ao menu principal...")
 
@@ -142,10 +196,11 @@ def Menu_Produto():
         print('''\n---Opções de Produto---
 [1] - Cadastrar Produto
 [2] - Listar Produtos Cadastrados
-[3] - Excluir Cadastro de um Produto
-[4] - Voltar ao Menu Principal''')
+[3] - Atualizar Informações de Produto
+[4] - Excluir Cadastro de um Produto
+[5] - Voltar ao Menu Principal''')
         Opcao_Produto = input("\nDigite a opção desejada: ").strip()
-        if Opcao_Produto not in ('1','2','3','4'):
+        if Opcao_Produto not in ('1','2','3','4','5'):
             print("\nResposta inválida!")
             continue
         match Opcao_Produto:
@@ -154,8 +209,10 @@ def Menu_Produto():
             case '2':
                 Produto.Listar_Produtos(Produtos_Cadastrados)
             case '3':
-                Produto.Excluir_Cadastro_Produto(Produtos_Cadastrados)
+                Produto.Atualizar_Produto_info(Produtos_Cadastrados)
             case '4':
+                Produto.Excluir_Cadastro_Produto(Produtos_Cadastrados)
+            case '5':
                 break
     print("\nVoltando ao menu principal...")
 
